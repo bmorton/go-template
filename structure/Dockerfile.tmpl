@@ -1,0 +1,17 @@
+FROM golang
+MAINTAINER Brian Morton "brian@mmm.hm"
+
+ENV REPO github.com/bmorton/{{.Name}}
+
+ENV BRIDGE_VERSION v0.0.2-dev
+ADD https://github.com/bmorton/bridge/releases/download/${BRIDGE_VERSION}/bridge-linux-amd64.tar.gz /tmp/
+RUN cd /tmp && tar xfvz /tmp/bridge-linux-amd64.tar.gz && mv /tmp/bridge-linux-amd64 /bin/bridge && chmod +x /bin/bridge
+
+ADD . /go/src/$REPO
+RUN mv /go/src/$REPO/env /env
+RUN cd /go/src/$REPO && go get -v -d
+RUN go install $REPO
+
+EXPOSE 3000
+ENTRYPOINT ["/env"]
+CMD ["/go/bin/{{.Name}}"]
