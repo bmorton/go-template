@@ -19,7 +19,7 @@ func main() {
 	users := api.NewUsersResource(db)
 	r.GET("/users", users.Index)
 	r.POST("/users", users.Create)
-	r.GET("/users/:userID", Users.Show)
+	r.GET("/users/:userID", users.Show)
 	r.PATCH("/users/:userID", users.Update)
 	r.DELETE("/users/:userID", users.Destroy)
 

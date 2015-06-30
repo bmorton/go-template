@@ -80,7 +80,7 @@ func (r *UsersResource) Update(c *gin.Context) {
 	}
 
 	submission.Apply(&record)
-	if err := t.db.Save(&record).Error; err != nil {
+	if err := r.db.Save(&record).Error; err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}

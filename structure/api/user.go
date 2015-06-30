@@ -37,18 +37,26 @@ type UserSubmission struct {
 
 // Record returns a database-friendly struct of the input
 func (s *UserSubmission) Record() *db.UserRecord {
-	return &db.UserRecord{
-		Name:  s.Name,
-		Email: s.Email,
+	r := &db.UserRecord{}
+
+	if s.Name.Valid {
+		r.Name = s.Name.String
 	}
+
+	if s.Email.Valid {
+		r.Email = s.Email.String
+	}
+
+	return r
 }
 
+// Apply sets the proper submission fields on the supplied UserRecord.
 func (u *UserSubmission) Apply(r *db.UserRecord) {
 	if u.Name.Valid {
-		r.Name = u.Name
+		r.Name = u.Name.String
 	}
 
 	if u.Email.Valid {
-		r.Email = u.Email
+		r.Email = u.Email.String
 	}
 }

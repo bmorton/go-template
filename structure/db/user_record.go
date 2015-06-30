@@ -10,6 +10,6 @@ type UserRecord struct {
 	UpdatedAt time.Time
 }
 
-func (r TeamRecord) TableName() string {
+func (r UserRecord) TableName() string {
 	return "users"
 }
