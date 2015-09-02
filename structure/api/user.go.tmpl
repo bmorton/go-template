@@ -51,12 +51,12 @@ func (s *UserSubmission) Record() *db.UserRecord {
 }
 
 // Apply sets the proper submission fields on the supplied UserRecord.
-func (u *UserSubmission) Apply(r *db.UserRecord) {
-	if u.Name.Valid {
-		r.Name = u.Name.String
+func (s *UserSubmission) Apply(r *db.UserRecord) {
+	if s.Name.Valid {
+		r.Name = s.Name.String
 	}
 
-	if u.Email.Valid {
-		r.Email = u.Email.String
+	if s.Email.Valid {
+		r.Email = s.Email.String
 	}
 }

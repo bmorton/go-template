@@ -91,7 +91,7 @@ func (r *UsersResource) Update(c *gin.Context) {
 // Destroy is the action mounted at `DELETE /users/:userID` for deleting a user
 func (t *UsersResource) Destroy(c *gin.Context) {
 	var record db.UserRecord
-	if err := t.db.Where(&db.UserRecord{ID: c.Params.ByName("userIDxs")}).First(&record).Error; err == gorm.RecordNotFound {
+	if err := t.db.Where(&db.UserRecord{ID: c.Params.ByName("userID")}).First(&record).Error; err == gorm.RecordNotFound {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	} else if err != nil {
