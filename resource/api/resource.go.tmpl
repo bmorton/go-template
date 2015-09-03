@@ -4,18 +4,18 @@ import (
   "time"
 
   "{{.ImportPrefix}}/{{.AppName}}/db"
-  "github.com/guregu/null"
 )
 
 // {{capitalize .SingularName}}Representation is the struct that is encoded as JSON and returned for
 // {{capitalize .PluralName}}Resource requests.
 type {{capitalize .SingularName}}Representation struct {
   ID        string    `json:"id"`
+  CreatedAt time.Time `json:"created_at"`
+  UpdatedAt time.Time `json:"updated_at"`
+
   // Add fields that should be returned in JSON responses
   // Name      string    `json:"name"`
   // Email     string    `json:"email"`
-  CreatedAt time.Time `json:"created_at"`
-  UpdatedAt time.Time `json:"updated_at"`
 }
 
 // New{{capitalize .SingularName}}Representation transforms a {{capitalize .SingularName}}Record into its JSON-encodeable
@@ -23,18 +23,22 @@ type {{capitalize .SingularName}}Representation struct {
 func New{{capitalize .SingularName}}Representation(r *db.{{capitalize .SingularName}}Record) *{{capitalize .SingularName}}Representation {
   return &{{capitalize .SingularName}}Representation{
     ID:        r.ID,
+    CreatedAt: r.CreatedAt,
+    UpdatedAt: r.UpdatedAt,
+
     // Add fields to map from database record to representation
     // Name:      r.Name,
     // Email:     r.Email,
-    CreatedAt: r.CreatedAt,
-    UpdatedAt: r.UpdatedAt,
   }
 }
 
 // {{capitalize .SingularName}}Submission is the struct that is used for user input in Create and Update.
 // These are the only fields that are accepted.
 type {{capitalize .SingularName}}Submission struct {
-  // Add any fields that a client and create/update in the database.
+  // Add any fields that a client and create/update in the database.  You'll
+  // need the "github.com/guregu/null" package if you decide to use the
+  // null.String type below.
+
   // Name  null.String `json:"name"`
   // Email null.String `json:"email"`
 }

@@ -71,7 +71,7 @@ func (r *{{capitalize .PluralName}}Resource) Update(c *gin.Context) {
   var record db.{{capitalize .SingularName}}Record
   var submission {{capitalize .SingularName}}Submission
   c.Bind(&submission)
-  if err := r.db.Where(&db.{{capitalize .SingularName}}{ID: id}).First(&record).Error; err == gorm.RecordNotFound {
+  if err := r.db.Where(&db.{{capitalize .SingularName}}Record{ID: id}).First(&record).Error; err == gorm.RecordNotFound {
     c.AbortWithStatus(http.StatusNotFound)
     return
   } else if err != nil {
