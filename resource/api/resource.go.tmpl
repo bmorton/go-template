@@ -1,0 +1,66 @@
+package api
+
+import (
+  "time"
+
+  "{{.ImportPrefix}}/{{.AppName}}/db"
+)
+
+// {{capitalize .SingularName}}Representation is the struct that is encoded as JSON and returned for
+// {{capitalize .PluralName}}Resource requests.
+type {{capitalize .SingularName}}Representation struct {
+  ID        string    `json:"id"`
+  CreatedAt time.Time `json:"created_at"`
+  UpdatedAt time.Time `json:"updated_at"`
+
+  // Add fields that should be returned in JSON responses
+  // Name      string    `json:"name"`
+  // Email     string    `json:"email"`
+}
+
+// New{{capitalize .SingularName}}Representation transforms a {{capitalize .SingularName}}Record into its JSON-encodeable
+// representation.
+func New{{capitalize .SingularName}}Representation(r *db.{{capitalize .SingularName}}Record) *{{capitalize .SingularName}}Representation {
+  return &{{capitalize .SingularName}}Representation{
+    ID:        r.ID,
+    CreatedAt: r.CreatedAt,
+    UpdatedAt: r.UpdatedAt,
+
+    // Add fields to map from database record to representation
+    // Name:      r.Name,
+    // Email:     r.Email,
+  }
+}
+
+// {{capitalize .SingularName}}Submission is the struct that is used for user input in Create and Update.
+// These are the only fields that are accepted.
+type {{capitalize .SingularName}}Submission struct {
+  // Add any fields that a client and create/update in the database.  You'll
+  // need the "github.com/guregu/null" package if you decide to use the
+  // null.String type below.
+
+  // Name  null.String `json:"name"`
+  // Email null.String `json:"email"`
+}
+
+// Record returns a database-friendly struct of the input
+func (s *{{capitalize .SingularName}}Submission) Record() *db.{{capitalize .SingularName}}Record {
+  r := &db.{{capitalize .SingularName}}Record{}
+  s.Apply(r)
+
+  return r
+}
+
+// Apply sets the proper submission fields on the supplied {{capitalize .SingularName}}Record.
+func (s *{{capitalize .SingularName}}Submission) Apply(r *db.{{capitalize .SingularName}}Record) {
+  // Add the transformations that need to happen to apply data from Submission
+  // structs onto the record that gets saved to the database.
+
+  // if s.Name.Valid {
+  //   r.Name = s.Name.String
+  // }
+
+  // if s.Email.Valid {
+  //   r.Email = s.Email.String
+  // }
+}

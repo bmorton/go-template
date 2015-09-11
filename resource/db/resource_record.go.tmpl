@@ -1,0 +1,17 @@
+package db
+
+import "time"
+
+type {{capitalize .SingularName}}Record struct {
+  ID        string
+  CreatedAt time.Time
+  UpdatedAt time.Time
+
+  // Add more database fields here
+  // Name      string
+  // Email     string
+}
+
+func (r {{capitalize .SingularName}}Record) TableName() string {
+  return "{{.PluralName}}"
+}

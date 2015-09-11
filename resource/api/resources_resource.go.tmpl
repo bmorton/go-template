@@ -1,0 +1,108 @@
+package api
+
+import (
+  "net/http"
+
+  "{{.ImportPrefix}}/{{.AppName}}/db"
+  "github.com/gin-gonic/gin"
+  "github.com/jinzhu/gorm"
+)
+
+// {{capitalize .PluralName}}Resource is the struct responsible for listing, detailing, creating,
+// updating, and deleting {{.PluralName}}.
+type {{capitalize .PluralName}}Resource struct {
+  db *gorm.DB
+}
+
+// New{{capitalize .PluralName}}Resource creates a new {{capitalize .PluralName}}Resource given a gorm database
+func New{{capitalize .PluralName}}Resource(db *gorm.DB) *{{capitalize .PluralName}}Resource {
+  return &{{capitalize .PluralName}}Resource{db: db}
+}
+
+// Index is the action mounted at `GET /{{.PluralName}}` for listing all {{.PluralName}}
+func (r *{{capitalize .PluralName}}Resource) Index(c *gin.Context) {
+  var records []*db.{{capitalize .SingularName}}Record
+
+  if err := r.db.Find(&records).Error; err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  var reps []*{{capitalize .SingularName}}Representation
+  for _, record := range records {
+    reps = append(reps, New{{capitalize .SingularName}}Representation(record))
+  }
+
+  c.JSON(http.StatusOK, reps)
+}
+
+// Create is the action mounted at `POST /{{.PluralName}}` for creating a {{.SingularName}}
+func (r *{{capitalize .PluralName}}Resource) Create(c *gin.Context) {
+  submission := &{{capitalize .SingularName}}Submission{}
+  c.Bind(submission)
+  record := submission.Record()
+
+  if err := r.db.Create(record).Error; err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.JSON(http.StatusCreated, New{{capitalize .SingularName}}Representation(record))
+}
+
+// Create is the action mounted at `GET /{{.PluralName}}/:{{.SingularName}}ID` for getting a {{.SingularName}}
+func (r *{{capitalize .PluralName}}Resource) Show(c *gin.Context) {
+  var record db.{{capitalize .SingularName}}Record
+  if err := r.db.Where(&db.{{capitalize .SingularName}}Record{ID: c.Params.ByName("{{.SingularName}}ID")}).First(&record).Error; err == gorm.RecordNotFound {
+    c.AbortWithStatus(http.StatusNotFound)
+    return
+  } else if err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.JSON(http.StatusOK, New{{capitalize .SingularName}}Representation(&record))
+}
+
+// Update is the action mounted at `PATCH /{{.PluralName}}/:{{.SingularName}}ID` for updating a {{.SingularName}}
+func (r *{{capitalize .PluralName}}Resource) Update(c *gin.Context) {
+  id := c.Params.ByName("{{.SingularName}}ID")
+
+  var record db.{{capitalize .SingularName}}Record
+  var submission {{capitalize .SingularName}}Submission
+  c.Bind(&submission)
+  if err := r.db.Where(&db.{{capitalize .SingularName}}Record{ID: id}).First(&record).Error; err == gorm.RecordNotFound {
+    c.AbortWithStatus(http.StatusNotFound)
+    return
+  } else if err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  submission.Apply(&record)
+  if err := r.db.Save(&record).Error; err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.JSON(http.StatusOK, New{{capitalize .SingularName}}Representation(&record))
+}
+
+// Destroy is the action mounted at `DELETE /{{.PluralName}}/:{{.SingularName}}ID` for deleting a {{.SingularName}}
+func (t *{{capitalize .PluralName}}Resource) Destroy(c *gin.Context) {
+  var record db.{{capitalize .SingularName}}Record
+  if err := t.db.Where(&db.{{capitalize .SingularName}}Record{ID: c.Params.ByName("{{.SingularName}}ID")}).First(&record).Error; err == gorm.RecordNotFound {
+    c.AbortWithStatus(http.StatusNotFound)
+    return
+  } else if err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  if err := t.db.Delete(&record).Error; err != nil {
+    c.AbortWithError(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.String(http.StatusNoContent, "")
+}

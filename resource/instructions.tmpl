@@ -1,0 +1,9 @@
+A simple Gorm resource has been generated for {{.SingularName}}!  Add this code
+to your main.go to get things routed properly:
+
+{{.PluralName}} := api.New{{capitalize .PluralName}}Resource(&db)
+r.GET("/{{.PluralName}}", {{.PluralName}}.Index)
+r.POST("/{{.PluralName}}", {{.PluralName}}.Create)
+r.GET("/{{.PluralName}}/:{{.SingularName}}ID", {{.PluralName}}.Show)
+r.PATCH("/{{.PluralName}}/:{{.SingularName}}ID", {{.PluralName}}.Update)
+r.DELETE("/{{.PluralName}}/:{{.SingularName}}ID", {{.PluralName}}.Destroy)
