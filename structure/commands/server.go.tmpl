@@ -1,0 +1,38 @@
+package commands
+
+import (
+	"{{.ImportPrefix}}/{{.Name}}/server"
+	"github.com/urfave/cli"
+)
+
+func NewServerCommand() cli.Command {
+	return cli.Command{
+		Name:      "server",
+		ShortName: "s",
+		Usage:     "Run the server",
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:   "listen",
+				Value:  ":8080",
+				Usage:  "host:port to listen on",
+				EnvVar: "LISTEN",
+			},
+			cli.StringFlag{
+				Name:   "debug-listen",
+				Value:  ":8081",
+				Usage:  "host:port to listen on for debug requests",
+				EnvVar: "DEBUG_LISTEN",
+			},
+		},
+		Action: func(ctx *cli.Context) error {
+			s := server.New(server.Server{
+				Listen:           ctx.String("listen"),
+				Development:      ctx.GlobalBool("development"),
+				DebugListen:      ctx.String("debug-listen"),
+			})
+
+			s.Run()
+      return nil
+		},
+	}
+}
